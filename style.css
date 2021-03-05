@@ -1,3 +1,18 @@
-header {
-    /* background-image: url("images/water-drops-glass-night.jpg"); */
+header.raining.night {
+    background-image: url("images/water-drops-glass-night.jpg"); 
+}
+header.raining.day {
+    background-image: url("images/water-drops-glass-day.jpg"); 
+}
+
+header.night{
+     background-image: url("images/night-sky.jpg"); 
+}
+
+header.night > div{
+    color : white;
+}
+
+header.day{
+    background-image: url("images/blue-sky.jpg"); 
 }
