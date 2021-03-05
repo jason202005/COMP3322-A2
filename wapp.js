@@ -72,7 +72,7 @@ function headerData(){
 
 
 function headerHTML() {
-    document.body.innerHTML = '<header> <div class="header title"> <h1>My Weather Portal</h1></div> <div class="header block"> <div class="header location">Hong Kong</div> <div class="header WeatherIcon"></div> <div class="header Temperature"></div> <div class="header Humidity"></div> <div class="header Rainfall"></div> <div class="header UVLevel"></div> <div class="header LastUpdate"></div> <div class="header Warning"></div> </div> </<header> <div id="output" style="margin-top: 1rem"></div>';
+    document.body.innerHTML = '<div class="header title"> <h1>My Weather Portal</h1></div> <header> <div class="header block"> <div class="header location">Hong Kong</div> <div class="header WeatherIcon"></div> <div class="header Temperature"></div> <div class="header Humidity"></div> <div class="header Rainfall"></div> <div class="header UVLevel"></div> <div class="header LastUpdate"></div> <div class="header Warning"></div> </div> </<header> <div id="output" style="margin-top: 1rem"></div>';
 }
 
 function rainingChecker(volume) {
