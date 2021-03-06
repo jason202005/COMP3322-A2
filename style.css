@@ -1,12 +1,23 @@
+header {
+    border-radius: 10px;
+    box-shadow: 5px 2px 5px lightgrey;
+}
+
 header.raining.night {
     background-image: url("images/water-drops-glass-night.jpg"); 
+    background-repeat: no-repeat;
+    background-size: cover;
 }
 header.raining.day {
     background-image: url("images/water-drops-glass-day.jpg"); 
+    background-repeat: no-repeat;
+    background-size: cover;
 }
 
 header.night{
      background-image: url("images/night-sky.jpg"); 
+     background-repeat: no-repeat;
+     background-size: cover;
 }
 
 header.night > div{
@@ -15,4 +26,64 @@ header.night > div{
 
 header.day{
     background-image: url("images/blue-sky.jpg"); 
+    background-repeat: no-repeat;
+    background-size: cover;
+}
+
+body > header > div.header.block > div.header.Humidity > span.humidityIcon { 
+    background-image: url("images/drop-48.png"); 
+    background-repeat: no-repeat;
+    background-size: cover;
+}
+
+body > header > div.header.block {
+    display: grid;
+    grid-template-columns: auto 15% 15% 15% 15% 15% auto;
+    justify-content: center;
+  align-content: center;
+}
+
+span.temperture {
+    font-size: 56px;
+}
+
+span.warning-title {
+    background: rgb(228,131,133);
+    border-radius: 3px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+header > div > div{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+header > div > div >span {
+    font-size: 30px;
+
+}
+
+body > header > div.header.block > div.header.LastUpdate >span  {
+    font-size: 16px;
+}
+
+.header.location {
+    padding: 13px;
+    font-size: 21px;
+}
+
+.header.Warning {
+    display: grid;
+    grid-template-columns: 10% auto 15%;
+    height: 26px;
+    padding-top: 10px;
+}
+
+span.warning-content {
+    display: flex;
+    align-items: center;
+    padding-left: 10px;
 }

@@ -9,7 +9,7 @@ function headerData(){
             
             let output = "";
             let TempData = gettingData.temperature.data[1];
-            output = '<span class="temperture"> '+ TempData.value + TempData.unit + ' </span>'
+            output = '<span class="temperture"> '+ TempData.value + '°' + TempData.unit + ' </span>'
             document.getElementsByClassName("header Temperature")[0].innerHTML = output;
             // Ref: https://stackoverflow.com/questions/34456436/document-getelementsbyclassname-innerhtml-not-working
             TempData = gettingData.icon[0];
@@ -18,12 +18,13 @@ function headerData(){
             document.getElementsByClassName("header WeatherIcon")[0].innerHTML = output;
 
             TempData = gettingData.humidity.data[0];
-            output = '<span class="humidity"> '+ TempData.value  + '</span>';
+            output = '<img src="images/drop-48.png" class="humidityIcon"></img><span class="humidity"> '+ TempData.value  + '</span>';
             output += '<span class="percent"> % </span>' ; 
             document.getElementsByClassName("header Humidity")[0].innerHTML = output;
 
             TempData = gettingData.rainfall.data[13];
-            output = '<span class="rainfall"> '+ TempData.max + TempData.unit + ' </span>';
+            output = '<img src="images/rain-48.png" class="rainfallIcon"></img><span class="rainfall"> '+ TempData.max  + ' </span>';
+            output += '<span class="rainfall-unit"> ' + TempData.unit + '</span>';
             document.getElementsByClassName("header Rainfall")[0].innerHTML = output;
             if (rainingChecker(TempData.max) == 1) {
                 document.getElementsByTagName("header")[0].classList.add("raining");
@@ -35,7 +36,7 @@ function headerData(){
             let mayMissingData;
             try {
                 mayMissingData = gettingData.uvindex.data[0].value;
-                output = '<span class="uvindex">' + mayMissingData  + '</span>';
+                output = '<img src="images/UVindex-48.png" class="uvindexIcon"></img><span class="uvindex">' + mayMissingData  + '</span>';
             }
             catch(err) {
                 output = '<span class="uvindex"> No data </span>';
@@ -52,17 +53,20 @@ function headerData(){
             }else{
                 document.getElementsByTagName("header")[0].classList.add("night");
             }
-            output = '<span class="lastupdate"> Last Update: ' + TempData + '</span>';
-            document.getElementsByClassName("header LastUpdate")[0].innerHTML = output;
-
+            let output3 = '<span class="lastupdate"> Last Update: ' + TempData + '</span>';
+            
+            output = '<span class="warning-title">Warning </span>';
+            output2 = '';
             try {
                 mayMissingData = warningMessage;
-                output = '<span class="warning">' + mayMissingData  + '</span>';
+                output2 = '<span class="warning-content">' + mayMissingData  + '</span>';
             }
             catch(err) {
-                output = '<span class="warning"> No data </span>';
+                output2 = '<span class="warning-content"> No data </span>';
             }
             finally {
+                output += output2 ;
+                output += output3 ;
                 document.getElementsByClassName("header Warning")[0].innerHTML = output;
             }
 
@@ -72,7 +76,7 @@ function headerData(){
 
 
 function headerHTML() {
-    document.body.innerHTML = '<div class="header title"> <h1>My Weather Portal</h1></div> <header> <div class="header block"> <div class="header location">Hong Kong</div> <div class="header WeatherIcon"></div> <div class="header Temperature"></div> <div class="header Humidity"></div> <div class="header Rainfall"></div> <div class="header UVLevel"></div> <div class="header LastUpdate"></div> <div class="header Warning"></div> </div> </<header> <div id="output" style="margin-top: 1rem"></div>';
+    document.body.innerHTML = '<div class="header title"> <h1>My Weather Portal</h1></div> <header> <div class="header location">Hong Kong</div> <div class="header block">  <div class="header WeatherIcon"></div> <div class="header Temperature"></div> <div class="header Humidity"></div> <div class="header Rainfall"></div> <div class="header UVLevel"></div> </div><div class="header Warning"></div>  </<header> <div id="output" style="margin-top: 1rem"></div>';
 }
 
 function rainingChecker(volume) {
