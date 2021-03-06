@@ -1,7 +1,13 @@
 headerHTML();
 headerData();
+mylocationHTML();
+ninedaysHTML();
+ninedaysData();
 
 
+function headerHTML() {
+    document.body.innerHTML = '<div class="header title"> <h1>My Weather Portal</h1></div> <header> <div class="header location">Hong Kong</div> <div class="header block">  <div class="header WeatherIcon"></div> <div class="header Temperature"></div> <div class="header Humidity"></div> <div class="header Rainfall"></div> <div class="header UVLevel"></div> </div><div class="header Warning"></div>  </<header> ';
+}
 function headerData(){
     fetch('https://data.weather.gov.hk/weatherAPI/opendata/weather.php?dataType=rhrread&lang=en')
         .then( response => {
@@ -39,7 +45,7 @@ function headerData(){
                 output = '<img src="images/UVindex-48.png" class="uvindexIcon"></img><span class="uvindex">' + mayMissingData  + '</span>';
             }
             catch(err) {
-                output = '<span class="uvindex"> No data </span>';
+                output = '<span class="uvindex"></span>';
             }
             finally {
                 document.getElementsByClassName("header UVLevel")[0].innerHTML = output;
@@ -62,7 +68,8 @@ function headerData(){
                 output2 = '<span class="warning-content">' + mayMissingData  + '</span>';
             }
             catch(err) {
-                output2 = '<span class="warning-content"> No data </span>';
+                output = '<span class="warning-title nowarning">Warning </span>';
+                output2 = '<span class="warning-content nowarning"></span>';
             }
             finally {
                 output += output2 ;
@@ -74,10 +81,30 @@ function headerData(){
     });
 }
 
-
-function headerHTML() {
-    document.body.innerHTML = '<div class="header title"> <h1>My Weather Portal</h1></div> <header> <div class="header location">Hong Kong</div> <div class="header block">  <div class="header WeatherIcon"></div> <div class="header Temperature"></div> <div class="header Humidity"></div> <div class="header Rainfall"></div> <div class="header UVLevel"></div> </div><div class="header Warning"></div>  </<header> <div id="output" style="margin-top: 1rem"></div>';
+function ninedaysHTML(){
+    document.body.innerHTML += '<section> 9-Day Forcast <div class="nine-days">  </div> </section>';
 }
+
+function ninedaysData(){
+    fetch('https://data.weather.gov.hk/weatherAPI/opendata/weather.php?dataType=fnd&lang=en')
+    .then( response => {
+        response.json().then( gettingData => {
+            let output = "";
+            let daynum = 0;
+            let ForecastData = gettingData.weatherForecast;
+            for (let day of ForecastData){
+                output = '<span class="day'+daynum+'">'+ day.ForecastIcon+ '</span>';
+                daynum += 1;
+                document.getElementsByClassName("nine-days")[0].innerHTML += output;
+            }
+           
+        });
+    });
+}
+
+function mylocationHTML(){}
+
+
 
 function rainingChecker(volume) {
     if ( volume > 0 ) return 1;
@@ -85,10 +112,11 @@ function rainingChecker(volume) {
 }
 
 function daytimeChecker(hour){
-    if (parseInt(hour) > 5 && parseInt(hour) < 17){
+    if (parseInt(hour) > 5 && parseInt(hour) < 18){
         return 1;
     }
     else {
         return 0;
     }
 }
+

@@ -49,11 +49,17 @@ span.temperture {
 
 span.warning-title {
     background: rgb(228,131,133);
-    border-radius: 3px;
+    border-radius: 3px 0px 0px 3px;
     display: flex;
     align-items: center;
     justify-content: center;
+    box-shadow: 2px 2px 4px grey;
 }
+
+span.warning-title.nowarning{
+    border-radius: 3px;
+}
+
 
 header > div > div{
     display: flex;
