@@ -108,6 +108,12 @@ span.nowarning {
    display: none;
 }
 
+.myDataBlock {
+    background-color: rgb(220, 254, 216);
+    border-radius: 10px;
+    box-shadow: 5px 2px 5px lightgrey;
+}
+
 /* end of mylocation block */
 
 .nineDWFBlock{

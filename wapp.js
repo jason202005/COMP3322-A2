@@ -122,7 +122,7 @@ function ninedaysData(){
 // end of nine-days block 
 function mylocationHTML(){
 
-    document.body.innerHTML += '<section><div class="myDataBlock"><div class="title"> My Location </div> <div class="myDataContent"> <div class="LocationLoading"> Loading.... <div> </div></div></section>';
+    document.body.innerHTML += '<section><div class="myDataBlock"> <div class="title"> My Location </div> <div class="myDataContent"> <div class="LocationLoading"> Loading.... </div> <div class="top-left-loc"> <div class="district">  </div> <div class="suburb">   </div> </div> <div class="top-right-temp">  </div> <div class="bot-left-temp"> <div class="rainfall"> </div> </div> <div class="bot-right-temp"> <div class="aqhi">  </div> <div class="risklevel"> </div> </div> </div> </div></section>';
     var latitude, longitude;
     if (navigator.geolocation){
         navigator.geolocation.getCurrentPosition(currentpos);
