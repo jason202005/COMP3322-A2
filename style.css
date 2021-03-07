@@ -108,10 +108,72 @@ span.nowarning {
    display: none;
 }
 
+body > section:nth-child(3) > div > div.title {
+    font-size: 21px;
+}
+
 .myDataBlock {
     background-color: rgb(220, 254, 216);
     border-radius: 10px;
     box-shadow: 5px 2px 5px lightgrey;
+    padding: 10px;
+}
+.myDataContent {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(60px, 1fr));
+    grid-template-rows: repeat(2, 100px);
+}
+
+.bot-right-temp {
+    display: grid;
+    grid-template-columns: 40% 60%;
+    align-items: center;
+}
+
+.aqhilevel {
+    display: grid;
+}
+
+.rainfallIcon{
+    visibility: hidden;
+}
+
+.rainfallIcon.ready {
+    visibility: visible;
+}
+
+body > section:nth-child(3) {
+    display: grid;
+    grid-template-columns: 60% 40%;
+}
+.top-left-loc {
+    padding: 20px;
+    justify-content: center;
+    align-items: center;
+    display: grid;
+}
+
+span.mylocation-degree {
+    font-size: 46px;
+}
+span.mylocation-rainMax {
+    font-size: 30px;
+}
+
+span.aqhi {
+    font-size: 30px;
+}
+
+.bot-left-temp {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.top-right-temp {
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 /* end of mylocation block */

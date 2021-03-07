@@ -30,8 +30,8 @@ function headerData(){
             document.getElementsByClassName("header Humidity")[0].innerHTML = output;
 
             TempData = gettingData.rainfall.data[13];
-            output = '<img src="images/rain-48.png" class="rainfallIcon"></img><span class="rainfall"> '+ TempData.max  + ' </span>';
-            output += '<span class="rainfall-unit"> ' + TempData.unit + '</span>';
+            output = '<img src="images/rain-48.png" class="headerrainfallIcon"></img><span class="headerrainfall"> '+ TempData.max  + ' </span>';
+            output += '<span class="header-rainfall-unit"> ' + TempData.unit + '</span>';
             document.getElementsByClassName("header Rainfall")[0].innerHTML = output;
             if (rainingChecker(TempData.max) == 1) {
                 document.getElementsByTagName("header")[0].classList.add("raining");
@@ -122,7 +122,7 @@ function ninedaysData(){
 // end of nine-days block 
 function mylocationHTML(){
 
-    document.body.innerHTML += '<section><div class="myDataBlock"> <div class="title"> My Location </div> <div class="myDataContent"> <div class="LocationLoading"> Loading.... </div> <div class="top-left-loc"> <div class="district">  </div> <div class="suburb">   </div> </div> <div class="top-right-temp">  </div> <div class="bot-left-temp"> <div class="rainfall"> </div> </div> <div class="bot-right-temp"> <div class="aqhi">  </div> <div class="risklevel"> </div> </div> </div> </div></section>';
+    document.body.innerHTML += '<section><div class="myDataBlock"> <div class="title"> My Location </div> <div class="myDataContent"> <div class="LocationLoading"> Loading.... </div> <div class="top-left-loc"> <div class="district">  </div> <div class="suburb">   </div> </div> <div class="top-right-temp">  </div> <div class="bot-left-temp"> <span class="rainfallIcon"><img src="images/rain-48.png"></img></span> <span class="rainfall">  </span> </div> <div class="bot-right-temp">  <span class="aqhiIcon"></span> <div class ="aqhilevel"> <span class="aqhi"> </span> <span class="risklevel"> </span> </div></div> </div> </div> <div class="selectLocation"></div></section>';
     var latitude, longitude;
     if (navigator.geolocation){
         navigator.geolocation.getCurrentPosition(currentpos);
@@ -234,12 +234,24 @@ async function airLocChecker(minD, district, suburb, rainData, output){
                                     
                                 }
                             }
-                            output = '<div class="top-left-loc"> <div class="district"> '+ district +' </div>' + '<div class="suburb"> ' + suburb + ' </div></div>';
-                            output += '<div class="top-right-temp"> '+tempMylocation + '°' + unitMylocation+'</div>';
-                            output += '<div class="bot-left-temp"> <div class="rainfall">' + rainData.max + rainData.unit + ' </div></div>';
-                            output += '<div class="bot-right-temp"> <div class="aqhi">' + aqhi + ' </div><div class="risklevel">' + risklevel + '</div></div>';
+                           
+                            document.getElementsByClassName("rainfallIcon")[0].classList.add("ready");
+                            document.getElementsByClassName("district")[0].innerHTML = district;
+                            document.getElementsByClassName("suburb")[0].innerHTML = suburb;
+                           
+                            output = '<span class="mylocation-degree">' + tempMylocation + '</span>' + '<span class="mylocation-unit">' + '°' + unitMylocation + '</span>';
+                            document.getElementsByClassName("top-right-temp")[0].innerHTML = output;
+                            
+                            output = '<span class="mylocation-rainMax">' +rainData.max + '</span>' +'<span class="mylocation-Runit">' + rainData.unit+ '</span>';
+                            document.getElementsByClassName("rainfall")[0].innerHTML = output;
+                            
+                            document.getElementsByClassName("aqhi")[0].innerHTML = aqhi;
+                            let imageSrc = `images/aqhi-${risklevel}.png`;
+                            document.getElementsByClassName("aqhiIcon")[0].innerHTML = '<img src="'+imageSrc+'"></img>';
+                            
+                            document.getElementsByClassName("risklevel")[0].innerHTML = risklevel;
                 
-                            document.getElementsByClassName("myDataContent")[0].innerHTML = output;
+                           
                         });
                     });
 
@@ -256,13 +268,6 @@ async function airLocChecker(minD, district, suburb, rainData, output){
         
     });
     
-    // let lat = lat1 - latitude * Math.PI/180;
-    // let long = long1 - longitude * Math.PI/180;
-    // const x = (λ2-λ1) * Math.cos((φ1+φ2)/2);
-    // const y = (φ2-φ1);
-    // const d = Math.sqrt(x*x + y*y) * R;
-    
-    // console.log(lat, long, 'air Q');
 }
 
 function locationChecker(district, type){
