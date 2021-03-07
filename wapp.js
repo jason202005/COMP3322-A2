@@ -1,10 +1,12 @@
 headerHTML();
 headerData();
 mylocationHTML();
+mySelectionHTML();
 ninedaysHTML();
 ninedaysData();
 
-var gettingData ;
+var gettingData ; //global data for header, mylocation and "tempature of different locations" blocks 
+
 function headerHTML() {
     document.body.innerHTML = '<div class="header title"> <h1>My Weather Portal</h1></div> <header> <div class="header location">Hong Kong</div> <div class="header block">  <div class="header WeatherIcon"></div> <div class="header Temperature"></div> <div class="header Humidity"></div> <div class="header Rainfall"></div> <div class="header UVLevel"></div> </div><div class="header Warning"></div>  </<header> ';
 }
@@ -58,6 +60,7 @@ function headerData(){
             if (daytimeChecker(hour.getHours()) == 1){
                 document.getElementsByTagName("header")[0].classList.add("day");
             }else{
+                document.getElementsByTagName("body")[0].classList.add("night");
                 document.getElementsByTagName("header")[0].classList.add("night");
             }
             let output3 = '<span class="lastupdate"> Last Update: ' + TempData + '</span>';
@@ -127,6 +130,17 @@ function mylocationHTML(){
     if (navigator.geolocation){
         navigator.geolocation.getCurrentPosition(currentpos);
     }
+}
+
+function mySelectionHTML(){
+    document.getElementsByClassName("selectLocation")[0].innerHTML = '<div class="title"> Temperatures </div> <div class="sub-title"> Select the location </div> <select id="locationSelected" onchange="mySelectFunction()"> <option value="-1"> Select a location </option> <option value="0"> King&#39;s Park </option> <option value="1"> Hong Kong Observatory </option> <option value="2"> Wong Chuk Hang </option> <option value="3"> Ta Kwu Ling </option> <option value="4"> Lau Fau Shan </option> <option value="5"> Sha Tin </option> <option value="6"> Tuen Mun </option> <option value="7"> Tseung Kwan O </option> <option value="8"> Sai Kung </option> <option value="9"> Cheung Chau </option> <option value="10"> Chek Lap Kok </option> <option value="11"> Tsing Yi </option> <option value="12"> Shek Kong </option> <option value="13"> Tsuen Wan Ho Koon </option> <option value="14"> Tsuen Wan Shing Mun Valley </option> <option value="15"> Hong Kong Park </option> <option value="16"> Shau Kei Wan </option> <option value="17"> Kowloon City </option> <option value="18"> Happy Valley </option> <option value="19"> Wong Tai Sin </option> <option value="20"> Stanley </option> <option value="21"> Kwun Tong </option> <option value="22"> Sham Shui Po </option> <option value="23"> Kai Tak Runway Park </option> <option value="24"> Yuen Long Park </option> <option value="25">Tai Mei Tuk</option> </option> </option> </select> <div id="selectedTemperture"></div>';
+}
+
+function mySelectFunction(){
+    let LoCindex = document.getElementById("locationSelected").value;
+    document.getElementById("selectedTemperture").innerHTML = '<span class="selectedTemp">' + gettingData.temperature.data[LoCindex].value + '</span>' ;
+    document.getElementById("selectedTemperture").innerHTML += '<span class="selectedUnit">' + '°' + gettingData.temperature.data[LoCindex].unit + '</span>' ;
+    
 }
 
 function mylocationData(){
