@@ -129,7 +129,7 @@ function mylocationHTML(){
     }
 }
 
-function mylocationData(){
+async function mylocationData(){
     fetch('https://nominatim.openstreetmap.org/reverse?format=json&lat=' +latitude + '&lon='+ longitude + '&zoom=18&addressdetails=1&accept-language=en')
     .then( response => {
         response.json().then( fetchingData => {
@@ -140,19 +140,67 @@ function mylocationData(){
             let suburb =  dAnds.s;
             let locIndex = locationChecker(district, "rainfall");
             let rainData =  gettingData.rainfall.data[locIndex];
-            console.log(locIndex);
+            var minD = 9999999.99999;
+            airLocChecker(minD, district, suburb, rainData, output);
+           
+
+        
+        });
+    });
+}
+
+
+async function airLocChecker(minD, district, suburb, rainData, output){
+    let symlat2 = latitude * Math.PI/180;
+    let symlong2 = longitude * Math.PI/180;
+    let saveindex = 0;
+    await fetch('https://ogciopsi.blob.core.windows.net/dataset/weather-station/weather-station-info.json')
+    .then( response => {
+        response.json().then ( fetchingData => {
+            for (let index in fetchingData){
+               let lat1 = fetchingData[index].latitude;
+               let long1 = fetchingData[index].longitude;
+               let symlat1 = lat1 * Math.PI/180;
+               let symlong1 = long1 * Math.PI/180;
+               
+               const x = (symlong1 - symlong2) * Math.cos((symlat1+symlat2)/2);
+               const y = (symlat1 - symlat2);
+               const d = Math.sqrt(x*x + y*y) * 6371;
+               console.log(d, "distance");
+               if (d < minD) {
+                   minD = d;
+                   console.log(minD, "mindistance adjusted");
+                   saveindex = index;
+               }
+            }
+            let nameOfStation =  fetchingData[saveindex].station_name_en;
+            let stationLat = fetchingData[saveindex].latitude;
+            let stationLong = fetchingData[saveindex].longitude;
+
+            console.log(nameOfStation, "nameOfStation");
+            console.log(stationLat, "stationLat");
+            console.log(stationLong, "stationLong");
+
+            
             // let aqhi = gettingData;
             // let risklevel= gettingData;
             output = '<div class="top-left-loc"> <div class="district"> '+ district +' </div>' + '<div class="suburb"> ' + suburb + ' </div></div>';
             output += '<div class="top-right-temp"> '+"" + '°' + ""+'</div>';
-             output += '<div class="bot-left-temp"> <div class="rainfall">' + rainData.max + rainData.unit + ' </div></div>';
+            output += '<div class="bot-left-temp"> <div class="rainfall">' + rainData.max + rainData.unit + ' </div></div>';
 
             document.getElementsByClassName("myDataContent")[0].innerHTML = output;
-
-        
-            // "potato".includes("to");
+            
         });
+        
     });
+    
+    // let lat = lat1 - latitude * Math.PI/180;
+    // let long = long1 - longitude * Math.PI/180;
+    // const x = (λ2-λ1) * Math.cos((φ1+φ2)/2);
+    // const y = (φ2-φ1);
+    // const d = Math.sqrt(x*x + y*y) * R;
+    
+    // console.log(lat, long, 'air Q');
 }
 
 function locationChecker(district, type){
