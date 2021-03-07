@@ -42,7 +42,7 @@ body > header > div.header.block > div.header.Humidity > span.humidityIcon {
 
 body > header > div.header.block {
     display: grid;
-    grid-template-columns: auto 15% 15% 15% 15% 15% auto;
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
     justify-content: center;
   align-content: center;
 }
@@ -98,6 +98,15 @@ span.warning-content {
     padding-left: 10px;
 }
 
+span.nowarning {
+    visibility: hidden;
+}
+/* end of header block */
+
+
+
+/* end of mylocation block */
+
 .nineDWFBlock{
     background-color: rgb(237, 239, 246);
     border-radius: 10px;
@@ -132,3 +141,4 @@ section > div> div > div.day  > div > img {
     align-items: center; 
     justify-items: center;
 }
+/* end of 9-day forcast block */

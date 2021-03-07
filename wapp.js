@@ -118,9 +118,30 @@ function ninedaysData(){
     });
 }
 
-function mylocationHTML(){}
+function mylocationHTML(){
 
+    document.body.innerHTML += '<section></section>';
+    var latitude, longitude;
+    if (navigator.geolocation){
+        navigator.geolocation.getCurrentPosition(currentpos);
+    }
+}
 
+function mylocationData(){
+    fetch('https://nominatim.openstreetmap.org/reverse?format=json&lat=' +latitude + '&lon='+ longitude + '&zoom=18&addressdetails=1')
+    .then( response => {
+        response.json().then( gettingData => {
+
+        });
+    });
+}
+
+function currentpos(pos) {
+    latitude = parseFloat(pos.coords.latitude);
+    longitude =parseFloat(pos.coords.longitude);
+    console.log(latitude, longitude);
+    mylocationData(latitude,longitude);
+}
 
 function rainingChecker(volume) {
     if ( volume > 0 ) return 1;
