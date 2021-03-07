@@ -103,7 +103,10 @@ span.nowarning {
 }
 /* end of header block */
 
-
+.LocationLoading.ready
+{
+   display: none;
+}
 
 /* end of mylocation block */
 

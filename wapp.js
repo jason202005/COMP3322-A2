@@ -4,15 +4,16 @@ mylocationHTML();
 ninedaysHTML();
 ninedaysData();
 
-
+var gettingData ;
 function headerHTML() {
     document.body.innerHTML = '<div class="header title"> <h1>My Weather Portal</h1></div> <header> <div class="header location">Hong Kong</div> <div class="header block">  <div class="header WeatherIcon"></div> <div class="header Temperature"></div> <div class="header Humidity"></div> <div class="header Rainfall"></div> <div class="header UVLevel"></div> </div><div class="header Warning"></div>  </<header> ';
 }
 function headerData(){
     fetch('https://data.weather.gov.hk/weatherAPI/opendata/weather.php?dataType=rhrread&lang=en')
         .then( response => {
-            response.json().then( gettingData => {
+            response.json().then( fetchingData => {
             
+            gettingData = fetchingData;
             let output = "";
             let TempData = gettingData.temperature.data[1];
             output = '<span class="temperture"> '+ TempData.value + '°' + TempData.unit + ' </span>'
@@ -88,10 +89,10 @@ function ninedaysHTML(){
 function ninedaysData(){
     fetch('https://data.weather.gov.hk/weatherAPI/opendata/weather.php?dataType=fnd&lang=en')
     .then( response => {
-        response.json().then( gettingData => {
+        response.json().then( fetchingData => {
             let output = "";
             let daynum = 0;
-            let ForecastData = gettingData.weatherForecast;
+            let ForecastData = fetchingData.weatherForecast;
            
             for (let dayno of ForecastData){
                 let month = parseInt(dayno.forecastDate.substr(6,2));
@@ -118,9 +119,10 @@ function ninedaysData(){
     });
 }
 
+// end of nine-days block 
 function mylocationHTML(){
 
-    document.body.innerHTML += '<section></section>';
+    document.body.innerHTML += '<section><div class="myDataBlock"><div class="title"> My Location </div> <div class="myDataContent"> <div class="LocationLoading"> Loading.... <div> </div></div></section>';
     var latitude, longitude;
     if (navigator.geolocation){
         navigator.geolocation.getCurrentPosition(currentpos);
@@ -128,19 +130,121 @@ function mylocationHTML(){
 }
 
 function mylocationData(){
-    fetch('https://nominatim.openstreetmap.org/reverse?format=json&lat=' +latitude + '&lon='+ longitude + '&zoom=18&addressdetails=1')
+    fetch('https://nominatim.openstreetmap.org/reverse?format=json&lat=' +latitude + '&lon='+ longitude + '&zoom=18&addressdetails=1&accept-language=en')
     .then( response => {
-        response.json().then( gettingData => {
+        response.json().then( fetchingData => {
+            let output = "";
+            let dAnds = dAndsChecker(fetchingData) ;
+            console.log(dAnds)
+            let district = dAnds.d;
+            let suburb =  dAnds.s;
+            let locIndex = locationChecker(district, "rainfall");
+            let rainData =  gettingData.rainfall.data[locIndex];
+            console.log(locIndex);
+            // let aqhi = gettingData;
+            // let risklevel= gettingData;
+            output = '<div class="top-left-loc"> <div class="district"> '+ district +' </div>' + '<div class="suburb"> ' + suburb + ' </div></div>';
+            output += '<div class="top-right-temp"> '+"" + '°' + ""+'</div>';
+             output += '<div class="bot-left-temp"> <div class="rainfall">' + rainData.max + rainData.unit + ' </div></div>';
 
+            document.getElementsByClassName("myDataContent")[0].innerHTML = output;
+
+        
+            // "potato".includes("to");
         });
     });
 }
+
+function locationChecker(district, type){
+    
+    let index = 0;
+    if (district.includes("District")){
+        let range = district.length  - 9; //8 for district 1 for space
+        district = district.substr(0,range);
+    }
+    console.log(district, index);
+
+    for (let loc in locationList){
+        // console.log(locationList[loc], loc);
+        if (type === "rainfall"){
+            if (gettingData.rainfall.data[loc].place.includes(district) )
+            {
+                console.log(gettingData.rainfall.data[loc], loc ,"success");
+                return loc;
+            }
+        }
+        //basic 25 districts
+        if (locationList[loc].includes(district)){
+            console.log(locationList[loc], loc);
+            return loc;
+        }
+    }
+    // otherwise return HKO data
+    return 1;
+}
+
+const locationList =[
+    "King's Park", 
+    "Hong Kong Observatory" ,
+    "Wong Chuk Hang" ,
+    "Ta Kwu Ling" ,
+    "Lau Fau Shan" ,
+    "Sha Tin" ,
+    "Tuen Mun" ,
+    "Tseung Kwan O" ,
+    "Sai Kung" ,
+    "Cheung Chau" ,
+    "Chek Lap Kok" ,
+    "Tsing Yi" ,
+    "Shek Kong" ,
+    "Tsuen Wan Ho Koon" ,
+    "Tsuen Wan Shing Mun Valley" ,
+    "Hong Kong Park" , 
+    "Shau Kei Wan" , 
+    "Kowloon City" , 
+    "Happy Valley" , 
+    "Wong Tai Sin" , 
+    "Stanley" , 
+    "Kwun Tong" , 
+    "Sham Shui Po" , 
+    "Kai Tak Runway Park" , 
+    "Yuen Long Park" , 
+    "Tai Mei Tuk" 
+]
 
 function currentpos(pos) {
     latitude = parseFloat(pos.coords.latitude);
     longitude =parseFloat(pos.coords.longitude);
     console.log(latitude, longitude);
+    document.getElementsByClassName("LocationLoading")[0].classList.add("ready");
     mylocationData(latitude,longitude);
+    
+}
+
+function dAndsChecker(data){
+    let dAnds = {
+        d: "",
+        s: ""
+    }; 
+    if (data.address.city_district){ 
+        dAnds.d = data.address.city_district;
+    }else if (data.address.country){
+        dAnds.d = data.address.country;
+    }else {
+        dAnds.d = "Unknown";
+    }
+
+    if (data.address.suburb){ 
+        dAnds.s = data.address.suburb;
+    }else if (data.address.borough){
+        dAnds.s = data.address.borough;
+    }
+    else if (data.address.town){
+        dAnds.s = data.address.town;
+    } else {
+        dAnds.s = "Unknown";
+    }
+    return dAnds;
 }
 
 function rainingChecker(volume) {
