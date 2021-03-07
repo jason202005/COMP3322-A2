@@ -129,7 +129,7 @@ function mylocationHTML(){
     }
 }
 
-async function mylocationData(){
+function mylocationData(){
     fetch('https://nominatim.openstreetmap.org/reverse?format=json&lat=' +latitude + '&lon='+ longitude + '&zoom=18&addressdetails=1&accept-language=en')
     .then( response => {
         response.json().then( fetchingData => {
@@ -166,10 +166,10 @@ async function airLocChecker(minD, district, suburb, rainData, output){
                const x = (symlong1 - symlong2) * Math.cos((symlat1+symlat2)/2);
                const y = (symlat1 - symlat2);
                const d = Math.sqrt(x*x + y*y) * 6371;
-               console.log(d, "distance");
+            //    console.log(d, "distance");
                if (d < minD) {
                    minD = d;
-                   console.log(minD, "mindistance adjusted");
+                //    console.log(minD, "mindistance adjusted");
                    saveindex = index;
                }
             }
@@ -181,14 +181,76 @@ async function airLocChecker(minD, district, suburb, rainData, output){
             console.log(stationLat, "stationLat");
             console.log(stationLong, "stationLong");
 
-            
-            // let aqhi = gettingData;
-            // let risklevel= gettingData;
-            output = '<div class="top-left-loc"> <div class="district"> '+ district +' </div>' + '<div class="suburb"> ' + suburb + ' </div></div>';
-            output += '<div class="top-right-temp"> '+"" + '°' + ""+'</div>';
-            output += '<div class="bot-left-temp"> <div class="rainfall">' + rainData.max + rainData.unit + ' </div></div>';
+            var tempMylocation, unitMylocation;
+            let tempdata = gettingData.temperature.data;
+            for (let ind in tempdata){
+                // console.log(tempdata[ind].place, "tempdata[ind].place");
+                
+                if (tempdata[ind].place.includes(nameOfStation)){
+                    tempMylocation = tempdata[ind].value ;
+                    unitMylocation = tempdata[ind].unit;
+                    // console.log(tempMylocation, unitMylocation, "success");
+                }
+            }
 
-            document.getElementsByClassName("myDataContent")[0].innerHTML = output;
+            
+            fetch("data/aqhi-station-info.json")
+            .then( response => {
+                response.json().then ( fetchingAirLocationData => {
+                    
+                    
+                    for (let index in fetchingAirLocationData){
+                        // console.log(fetchingAirLocationData[index].station, "fetchingAirLocationData[stat].station");
+                        
+                        let lat1 = fetchingAirLocationData[index].lat;
+                        let long1 = fetchingAirLocationData[index].long;
+                        let symlat1 = lat1 * Math.PI/180;
+                        let symlong1 = long1 * Math.PI/180;
+                        
+                        const x = (symlong1 - symlong2) * Math.cos((symlat1+symlat2)/2);
+                        const y = (symlat1 - symlat2);
+                        const d = Math.sqrt(x*x + y*y) * 6371;
+                        //    console.log(d, "distance");
+                        if (d < minD) {
+                            minD = d;
+                            //    console.log(minD, "mindistance adjusted");
+                            saveindex = index;
+                        }
+                    }
+                    let nameOfAirStation =  fetchingAirLocationData[saveindex].station;
+                    console.log(nameOfAirStation, "nameOfAirStation");
+
+                    var aqhi, risklevel;
+                    fetch('https://dashboard.data.gov.hk/api/aqhi-individual?format=json')
+                    .then( response => {
+                        response.json().then ( fetchingAirData => {
+                            for (let stat in fetchingAirData){
+                                if (fetchingAirData[stat].station.includes(nameOfAirStation) )
+                                {
+                                    aqhi = fetchingAirData[stat].aqhi ;
+                                    risklevel = fetchingAirData[stat].health_risk;
+                                    // console.log(aqhi, "aqhi");
+                                    // console.log(risklevel, "risklevel");
+                                    
+                                }
+                            }
+                            output = '<div class="top-left-loc"> <div class="district"> '+ district +' </div>' + '<div class="suburb"> ' + suburb + ' </div></div>';
+                            output += '<div class="top-right-temp"> '+tempMylocation + '°' + unitMylocation+'</div>';
+                            output += '<div class="bot-left-temp"> <div class="rainfall">' + rainData.max + rainData.unit + ' </div></div>';
+                            output += '<div class="bot-right-temp"> <div class="aqhi">' + aqhi + ' </div><div class="risklevel">' + risklevel + '</div></div>';
+                
+                            document.getElementsByClassName("myDataContent")[0].innerHTML = output;
+                        });
+                    });
+
+                    
+                    
+                });
+            });
+            
+            
+            
+         
             
         });
         
