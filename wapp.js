@@ -82,7 +82,7 @@ function headerData(){
 }
 
 function ninedaysHTML(){
-    document.body.innerHTML += '<section> 9-Day Forcast <div class="nine-days">  </div> </section>';
+    document.body.innerHTML += '<section><div class= "nineDWFBlock"> <div class="title"> 9-Day Forcast </div>   <div class="nine-days">  </div></div> </section>';
 }
 
 function ninedaysData(){
@@ -92,8 +92,24 @@ function ninedaysData(){
             let output = "";
             let daynum = 0;
             let ForecastData = gettingData.weatherForecast;
-            for (let day of ForecastData){
-                output = '<span class="day'+daynum+'">'+ day.ForecastIcon+ '</span>';
+           
+            for (let dayno of ForecastData){
+                let month = parseInt(dayno.forecastDate.substr(6,2));
+                let day = parseInt(dayno.forecastDate.substr(4,2));
+                let week = dayno.week.substr(0,3);
+                let maxtemp = dayno.forecastMaxtemp.value;
+                let mintemp = dayno.forecastMintemp.value;
+                let tempunit = '°' + dayno.forecastMintemp.unit;
+                let maxhumidity = dayno.forecastMaxrh.value;
+                let minhumidity = dayno.forecastMinrh.value;
+                let iconurl = `https://www.hko.gov.hk/images/HKOWxIconOutline/pic${dayno.ForecastIcon}.png`;
+                output = '<div class="day ' +daynum+ '">';
+                output += '<span class="week'+daynum+'">' + week + '  ' + day + '/' + month +  '</span>';
+                // output += '<span class="date'+daynum+'">' + day + '/' + month + '</span>';
+                output += '<div class="icon '+daynum+'"><img src="'+iconurl+'"></img></div>';
+                output += '<div class="temp MaxToMin">'+ mintemp + '-' + maxtemp + tempunit + '</div>';
+                output += '<div class="hum MaxToMin">'+ minhumidity + '-' + maxhumidity + '%' + '</div>';
+                output += '</div>';
                 daynum += 1;
                 document.getElementsByClassName("nine-days")[0].innerHTML += output;
             }

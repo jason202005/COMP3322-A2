@@ -3,6 +3,10 @@ header {
     box-shadow: 5px 2px 5px lightgrey;
 }
 
+div.header.block > div.header > img {
+    padding: 10px;
+}
+
 header.raining.night {
     background-image: url("images/water-drops-glass-night.jpg"); 
     background-repeat: no-repeat;
@@ -92,4 +96,39 @@ span.warning-content {
     display: flex;
     align-items: center;
     padding-left: 10px;
+}
+
+.nineDWFBlock{
+    background-color: rgb(237, 239, 246);
+    border-radius: 10px;
+    box-shadow: 5px 2px 5px lightgrey;
+}
+
+.header.title {
+    margin: 20px 20px 0px 20px;
+}
+
+section, header {
+    margin: 20px;
+}
+
+.nineDWFBlock > .title {
+    padding : 13px;
+    font-size: 21px;
+}
+
+.nine-days {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(60px, 1fr));
+    padding: 10px;
+}
+
+section > div> div > div.day  > div > img {
+    max-width: 60px;
+}
+
+.nine-days > .day{
+    display: inline-grid;
+    align-items: center; 
+    justify-items: center;
 }
