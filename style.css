@@ -1,6 +1,28 @@
-body.night{
-    
+body.dark{
+    background-color: #121212;
 }
+
+header.dark , section.dark > div, .headerTitle.dark , .nineDWFBlock{
+    box-shadow: 5px 2px 5px #232323 !important;
+    background-color: #383838 !important;
+    color: #AFAEAF;
+    transition: background-color 2s;
+    transition:  box-shadow 2s;
+    transition:  color 2s;
+}
+
+
+span.header-rainfall-unit {
+    font-size: 16px;
+    margin-top: 10px;
+    padding-left: 2px;
+}
+
+span.lastupdate {
+    font-size: 11px;
+    margin-left: 60%;
+}
+
 header {
     border-radius: 10px;
     box-shadow: 5px 2px 5px lightgrey;
@@ -45,9 +67,11 @@ body > header > div.header.block > div.header.Humidity > span.humidityIcon {
 
 body > header > div.header.block {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
     justify-content: center;
-  align-content: center;
+    align-content: center;
+    padding-left: 40px;
+    padding-right: 40px;
 }
 
 span.temperture {
@@ -90,7 +114,7 @@ body > header > div.header.block > div.header.LastUpdate >span  {
 
 .header.Warning {
     display: grid;
-    grid-template-columns: 10% auto 15%;
+    grid-template-columns: 10% auto 40%;
     height: 26px;
     padding-top: 10px;
 }
@@ -104,6 +128,69 @@ span.warning-content {
 span.nowarning {
     visibility: hidden;
 }
+span.aqhiIcon {
+    margin-left: auto;
+}
+
+@media screen and (max-width: 768px) {
+    body > header > div.header.block {
+        padding-left: 20px;
+        padding-right: 20px;
+    }
+    
+    body > section:nth-child(3) {
+        grid-template-columns: 1fr !important;
+    }
+
+    .selectLocation {
+        height: 200px;
+    }
+
+    .myDataContent {
+        display: grid;
+        grid-template-columns: 50% 50%;
+        grid-template-rows: auto;
+        grid-template-areas:
+            "loading loading"
+            "location location"
+            "temp rainfall"
+            "aqhi aqhi";
+    }
+    .myDataContent.ready{
+        grid-template-areas:
+            "location location"
+            "temp rainfall"
+            "aqhi aqhi";
+    }
+ 
+    .LocationLoading{
+        display: grid;
+        grid-area: loading;
+    }
+    .top-left-loc {
+        grid-area: location;
+    }
+    .top-right-temp {
+        grid-area: temp;
+    }
+    .bot-left-temp {
+        grid-area: rainfall;
+    }
+    .bot-right-temp {
+        grid-area: aqhi;
+        grid-template-columns: 21% 22% !important;
+        justify-content: center;
+    }
+    .nine-days {
+        grid-template-columns: repeat(auto-fit, minmax(100px, 1fr)) !important;
+    }
+    
+}
+
+@media screen and (min-width: 481px) and (max-width: 768px) {
+   
+}
+
 /* end of header block */
 
 .LocationLoading.ready
@@ -198,6 +285,14 @@ span.aqhi {
 span.selectedTemp {
     font-size: 46px;
 }
+
+select#locationSelected {
+    width: 100%;
+}
+span.lastupdate {
+    font-size: 11px;
+    
+}
 /* end of mylocation block */
 
 .nineDWFBlock{
@@ -206,7 +301,7 @@ span.selectedTemp {
     box-shadow: 5px 2px 5px lightgrey;
 }
 
-.header.title {
+.headerTitle{
     background-color: white;
     border-radius: 10px;
     box-shadow: 5px 2px 5px lightgrey;
