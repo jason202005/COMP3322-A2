@@ -6,6 +6,38 @@ body.dark{
     background-color: #121212;
 }
 
+body {
+    margin-top: 70px;
+    margin-right : 70px;
+    margin-left: 70px;
+}
+
+header:hover , section:hover , .headerTitle:hover{
+    width: 90%;
+    margin-left: 5%;
+    margin-right: 5%;
+    height: auto;
+    /* transform: rotate(2.5deg); */
+}
+header, section , .headerTitle{
+    transition: width 0.5s, margin-left 0.5s, margin-right 0.5s, height 0.5s;
+}
+
+
+button.darkmodeButton > .Pressed {
+  display: none;
+  transition: display 1s ease-out;
+}
+
+button.darkmodeButton.dark > .Pressed {
+    display: block;
+    transition: display 1s ease-out;
+}
+
+button.darkmodeButton.dark > .notPressed{
+    display: none;
+    transition: display 1s ease-out;
+}
 
 button.darkmodeButton {
     background-color: #252525;
@@ -16,8 +48,8 @@ button.darkmodeButton {
 }
 
 button.darkmodeButton.dark{
-    background-color: #383838;
-    color: #FFFFFF;
+    background-color: #AFAEAF;
+    color: black;
     transition: background-color 1s ease-out;
     transition: color 2s ease-out;
 }
@@ -58,6 +90,8 @@ header {
     border-radius: 10px;
     box-shadow: 5px 2px 5px lightgrey;
 }
+
+
 
 div.header.block > div.header > img {
     padding: 10px;
@@ -239,6 +273,12 @@ span.aqhiIcon {
 }
 
 @media screen and (max-width: 768px) {
+    body {
+        margin-top: 50px;
+        margin-right : 0px;
+        margin-left: 0px;
+    }
+    
     body > header > div.header.block {
         padding-left: 20px;
         padding-right: 20px;

@@ -8,7 +8,7 @@ ninedaysData();
 var gettingData ; //global data for header, mylocation and "tempature of different locations" blocks 
 
 function headerHTML() {
-    document.body.innerHTML = '<div class="headerTitle"> <h1>My Weather Portal</h1> <button class="darkmodeButton" id="btn01" onclick="Dark()">Dark Mode</button></div> <header> <div class="header location">Hong Kong</div> <div class="header block">  <div class="header WeatherIcon"></div> <div class="header Temperature"></div> <div class="header Humidity"></div> <div class="header Rainfall"></div> <div class="header UVLevel"></div> </div><div class="header Warning"></div>  </<header> ';
+    document.body.innerHTML = '<div class="headerTitle"> <h1>My Weather Portal</h1> <button class="darkmodeButton" id="btn01" onclick="Dark()"> <span class="notPressed"> Dark Mode </span> <span class="Pressed"> Day Mode </span> </button></div> <header> <div class="header location">Hong Kong</div> <div class="header block">  <div class="header WeatherIcon"></div> <div class="header Temperature"></div> <div class="header Humidity"></div> <div class="header Rainfall"></div> <div class="header UVLevel"></div> </div><div class="header Warning"></div>  </<header> ';
 }
 function Dark(){
     document.getElementsByTagName("body")[0].classList.toggle("dark");
