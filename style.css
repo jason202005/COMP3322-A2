@@ -5,9 +5,11 @@
 body.dark{
     background-color: #121212;
     transition: 1s;
+    
 }
 
 body {
+    background-color: #E6E6E8;
     margin-top: 70px;
     margin-right : 70px;
     margin-left: 70px;
@@ -101,7 +103,9 @@ header {
 
 div.header.block > div.header > img {
     padding: 10px;
+   
 }
+
 
 header.raining.night {
     background-image: url("images/water-drops-glass-night.jpg"); 
