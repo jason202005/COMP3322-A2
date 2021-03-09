@@ -20,6 +20,7 @@ function Dark(){
 }
 function headerData(){
     fetch('https://data.weather.gov.hk/weatherAPI/opendata/weather.php?dataType=rhrread&lang=en')
+    // for testing warning msg
     //fetch('data/weather.Feb17.json')
         .then( response => {
             response.json().then( fetchingData => {
@@ -69,6 +70,7 @@ function headerData(){
             if (daytimeChecker(hour.getHours()) == 1){
                 document.getElementsByTagName("header")[0].classList.add("day");
             }else{
+                // adding night and dark for auto dark mode at night
                 document.getElementsByTagName("body")[0].classList.add("dark");
                 document.getElementsByTagName("body")[0].classList.add("night");
                 document.getElementsByTagName("header")[0].classList.add("night");
@@ -85,6 +87,7 @@ function headerData(){
             
             output = '<div onclick="showMsg()" class="warning-title" id="warningbtn"> Warning </div>';
             console.log(gettingData.warningMessage[0], "Warning msg");
+            // when there is no warning msg, we add nomsg class to class Warning
             if (gettingData.warningMessage[0] === undefined){
                 document.getElementsByClassName("Warning")[0].classList.toggle("nomsg");
             }
@@ -200,6 +203,7 @@ function mylocationData(){
 
 
 async function airLocChecker(minD, district, suburb, rainData, output){
+    // symlat2 and symlong2 are storing our current angular location info.
     let symlat2 = latitude * Math.PI/180;
     let symlong2 = longitude * Math.PI/180;
     let saveindex = 0;
@@ -207,6 +211,8 @@ async function airLocChecker(minD, district, suburb, rainData, output){
     .then( response => {
         response.json().then ( fetchingData => {
             for (let index in fetchingData){
+                // lat1 and long1 are the location of weather stations
+                // symlat1 and symlong are the angular location info of weather stations
                let lat1 = fetchingData[index].latitude;
                let long1 = fetchingData[index].longitude;
                let symlat1 = lat1 * Math.PI/180;
@@ -216,6 +222,7 @@ async function airLocChecker(minD, district, suburb, rainData, output){
                const y = (symlat1 - symlat2);
                const d = Math.sqrt(x*x + y*y) * 6371;
             //    console.log(d, "distance");
+            // minD is the distance of the closest weather station
                if (d < minD) {
                    minD = d;
                 //    console.log(minD, "mindistance adjusted");
@@ -260,6 +267,7 @@ async function airLocChecker(minD, district, suburb, rainData, output){
                         const y = (symlat1 - symlat2);
                         const d = Math.sqrt(x*x + y*y) * 6371;
                         //    console.log(d, "distance");
+                        // minD is the distance of the closest air quality station
                         if (d < minD) {
                             minD = d;
                             //    console.log(minD, "mindistance adjusted");
@@ -269,6 +277,7 @@ async function airLocChecker(minD, district, suburb, rainData, output){
                     let nameOfAirStation =  fetchingAirLocationData[saveindex].station;
                     console.log(nameOfAirStation, "nameOfAirStation");
 
+                    // getting the air quality data with the closest location info
                     var aqhi, risklevel;
                     fetch('https://dashboard.data.gov.hk/api/aqhi-individual?format=json')
                     .then( response => {
@@ -337,11 +346,11 @@ function locationChecker(district, type){
                 return loc;
             }
         }
-        //basic 25 districts
-        if (locationList[loc].includes(district)){
-            console.log(locationList[loc], loc);
-            return loc;
-        }
+        //basic 25 districts, 
+        // if (locationList[loc].includes(district)){
+        //     console.log(locationList[loc], loc);
+        //     return loc;
+        // }
     }
     // otherwise return HKO data
     return 1;

@@ -445,6 +445,9 @@ span.selectedTemp {
 
 select#locationSelected {
     width: 100%;
+    height: 30px;
+    margin-top: 12px;
+    margin-bottom: 12px;
 }
 
 /* end of mylocation block */
