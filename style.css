@@ -4,6 +4,7 @@
 
 body.dark{
     background-color: #121212;
+    transition: 1s;
 }
 
 body {
@@ -61,9 +62,10 @@ section.dark > div, .headerTitle.dark , .nineDWFBlock.dark {
     box-shadow: 5px 2px 5px #232323 !important;
     background-color: #383838 !important;
     color: #AFAEAF;
-    transition: background-color 2s ease-out;
+    /* transition: background-color 2s ease-out;
     transition:  box-shadow 1s ease-out;
-    transition:  color 1s ease-out;
+    transition:  color 1s ease-out; */
+    transition: 1s;
 }
 
 header.dark{
@@ -73,7 +75,8 @@ header.dark{
 
 header.night > div.header.block > div > span ,header.night  > div.header.location {
     color: #d4d4d4;
-    transition:  color 1s ease-out;
+    /* transition:  color 1s ease-out; */
+    transition: 1s;
 }
 
 .headerTitle {
