@@ -14,11 +14,18 @@ button.darkmodeButton {
     border-radius: 30px;
 }
 
+button.darkmodeButton.dark{
+    background-color: #383838;
+    color: #FFFFFF;
+    transition: background-color 1s ease-out;
+    transition: color 2s ease-out;
+}
+
 header.dark , section.dark > div, .headerTitle.dark , .nineDWFBlock {
     box-shadow: 5px 2px 5px #232323 !important;
     background-color: #383838 !important;
     color: #AFAEAF;
-    transition: background-color 1s ease-out;
+    transition: background-color 2s ease-out;
     transition:  box-shadow 1s ease-out;
     transition:  color 1s ease-out;
 }
