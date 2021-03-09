@@ -10,17 +10,20 @@ body {
     margin-top: 70px;
     margin-right : 70px;
     margin-left: 70px;
+    transition: margin-top 1s , margin-right 1s, margin-left 1s;
 }
 
-header:hover , section:hover , .headerTitle:hover{
-    width: 90%;
+header:hover , section:hover , .headerTitle:hover ,.headerTitle.dark:hover{
+   
     margin-left: 5%;
     margin-right: 5%;
-    height: auto;
-    /* transform: rotate(2.5deg); */
+   
 }
 header, section , .headerTitle{
-    transition: width 0.5s, margin-left 0.5s, margin-right 0.5s, height 0.5s;
+    transition: margin-left 1s, margin-right 1s;
+}
+.headerTitle.dark{
+    transition: margin-left 1s, margin-right 1s !important;
 }
 
 
@@ -477,5 +480,6 @@ section > div> div > div.day  > div > img {
     display: inline-grid;
     align-items: center; 
     justify-items: center;
+    padding: 14px;
 }
 /* end of 9-day forcast block */
