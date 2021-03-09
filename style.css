@@ -22,7 +22,7 @@ button.darkmodeButton.dark{
     transition: color 2s ease-out;
 }
 
-header.dark , section.dark > div, .headerTitle.dark , .nineDWFBlock.dark {
+section.dark > div, .headerTitle.dark , .nineDWFBlock.dark {
     box-shadow: 5px 2px 5px #232323 !important;
     background-color: #383838 !important;
     color: #AFAEAF;
@@ -31,7 +31,12 @@ header.dark , section.dark > div, .headerTitle.dark , .nineDWFBlock.dark {
     transition:  color 1s ease-out;
 }
 
-header.dark > div.header.block > div > span ,header.dark  > div.header.location {
+header.dark{
+    box-shadow: 5px 2px 5px #232323 !important;
+    background-color: #383838 !important;
+}
+
+header.night > div.header.block > div > span ,header.night  > div.header.location {
     color: #d4d4d4;
     transition:  color 1s ease-out;
 }
@@ -157,6 +162,11 @@ body > header > div.header.block > div.header.LastUpdate >span  {
     "warningbtn lastupdate";
 }
 
+body > header > div.header.Warning.nomsg > div{
+    visibility: hidden;
+}
+
+
 .header.Warning.showMsg {
     grid-template-columns: 1fr 1fr 1fr 1fr;
     grid-template-areas: 
@@ -174,12 +184,15 @@ body > header > div.header.block > div.header.LastUpdate >span  {
     padding-left: 20px;
     padding-top: 10px;
 }
-
+.warning-title.showMsg{
+    border-radius: 3px 3px 0px 0px;
+}
 #warningbtnMsg{
     grid-area: warningbtnMsg;
     background: rgb(228,131,133);
     justify-content: left;
     padding-right: 20px;
+    box-shadow: 2px 2px 4px grey;
 }
 .lastupdate{
     grid-area: lastupdate;
