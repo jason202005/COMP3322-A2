@@ -6,6 +6,7 @@ body.dark{
     background-color: #121212;
 }
 
+
 button.darkmodeButton {
     background-color: #252525;
     color: #FFFFFF;
@@ -21,7 +22,7 @@ button.darkmodeButton.dark{
     transition: color 2s ease-out;
 }
 
-header.dark , section.dark > div, .headerTitle.dark , .nineDWFBlock {
+header.dark , section.dark > div, .headerTitle.dark , .nineDWFBlock.dark {
     box-shadow: 5px 2px 5px #232323 !important;
     background-color: #383838 !important;
     color: #AFAEAF;
@@ -47,10 +48,6 @@ span.header-rainfall-unit {
     padding-left: 2px;
 }
 
-span.lastupdate {
-    font-size: 11px;
-    margin-left: 60%;
-}
 
 header {
     border-radius: 10px;
@@ -107,13 +104,24 @@ span.temperture {
     font-size: 56px;
 }
 
-span.warning-title {
+#warningbtnMsg{
+    /* visibility: hidden; */
+    display: none;
+}
+
+#warningbtnMsg.showMsg{
+    /* visibility: visible; */
+    display: block;
+}
+
+.warning-title {
     background: rgb(228,131,133);
-    border-radius: 3px 0px 0px 3px;
+    border-radius: 3px;
     display: flex;
     align-items: center;
     justify-content: center;
     box-shadow: 2px 2px 4px grey;
+    border: none;
 }
 
 span.warning-title.nowarning{
@@ -143,9 +151,65 @@ body > header > div.header.block > div.header.LastUpdate >span  {
 
 .header.Warning {
     display: grid;
-    grid-template-columns: 10% auto 40%;
-    height: 26px;
+    grid-template-columns: 20% auto;
     padding-top: 10px;
+    grid-template-areas: 
+    "warningbtn lastupdate";
+}
+
+.header.Warning.showMsg {
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+    grid-template-areas: 
+    "warningbtn warningbtn lastupdate lastupdate"
+    "warningbtnMsg warningbtnMsg lastupdate lastupdate";
+}
+
+#warningbtn{
+    grid-area: warningbtn;
+    padding: 10px;
+    font-weight: bold;
+}
+#warningbtn.showMsg{
+    justify-content: left;
+    padding-left: 20px;
+    padding-top: 10px;
+}
+
+#warningbtnMsg{
+    grid-area: warningbtnMsg;
+    background: rgb(228,131,133);
+    justify-content: left;
+    padding-right: 20px;
+}
+.lastupdate{
+    grid-area: lastupdate;
+    font-size: 11px;
+    margin-left: auto;
+    margin-top: auto;
+    margin-bottom: auto;
+    padding-right: 20px;
+}
+
+
+@media screen and (max-width: 768px) {
+.lastupdate.showMsg{
+    display: none;
+}
+.header.Warning.showMsg {
+    grid-template-columns: 1fr ;
+    grid-template-areas: 
+    "warningbtn "
+    "warningbtnMsg ";
+}
+
+.header.Warning {
+    grid-template-columns: 30% auto;
+  
+}
+#warningbtn{
+    grid-area: warningbtn;
+    padding: 5px;
+}
 }
 
 span.warning-content {
@@ -319,10 +383,7 @@ span.selectedTemp {
 select#locationSelected {
     width: 100%;
 }
-span.lastupdate {
-    font-size: 11px;
-    
-}
+
 /* end of mylocation block */
 
 .nineDWFBlock{

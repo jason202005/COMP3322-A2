@@ -19,7 +19,8 @@ function Dark(){
     document.getElementById("btn01").classList.toggle("dark");
 }
 function headerData(){
-    fetch('https://data.weather.gov.hk/weatherAPI/opendata/weather.php?dataType=rhrread&lang=en')
+    // fetch('https://data.weather.gov.hk/weatherAPI/opendata/weather.php?dataType=rhrread&lang=en')
+    fetch('data/weather.Feb17.json')
         .then( response => {
             response.json().then( fetchingData => {
             
@@ -82,12 +83,17 @@ function headerData(){
             }
             let output3 = '<span class="lastupdate"> Last Update: ' + TempData + '</span>';
             
-            output = '<span class="warning-title">Warning </span>';
+            output = '<div onclick="showMsg()" class="warning-title" id="warningbtn"> Warning </div>';
             output2 = '';
             try {
-                mayMissingData = warningMessage;
-                output2 = '<span class="warning-content">' + mayMissingData  + '</span>';
+                mayMissingData = gettingData.warningMessage;
+                output2 += '<div id="warningbtnMsg"><ul>';
+                for (let numofmsg in mayMissingData){
+                    output2 += '<li class="warning-content'+ numofmsg+ '">' + mayMissingData  + '</li>';
+                }
+                output2 += '</ul></div>';
             }
+               
             catch(err) {
                 output = '<span class="warning-title nowarning">Warning </span>';
                 output2 = '<span class="warning-content nowarning"></span>';
@@ -100,6 +106,13 @@ function headerData(){
 
         });
     });
+}
+
+function showMsg(){
+    document.getElementById("warningbtnMsg").classList.toggle("showMsg");
+    document.getElementById("warningbtn").classList.toggle("showMsg");
+    document.getElementsByClassName("lastupdate")[0].classList.toggle("showMsg");
+    document.getElementsByClassName("Warning")[0].classList.toggle("showMsg");
 }
 
 function ninedaysHTML(){
