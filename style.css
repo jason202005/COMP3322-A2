@@ -51,6 +51,10 @@ button.darkmodeButton {
     margin-left: 10px;
     height: 42px;
     border-radius: 30px;
+    outline: 0;
+    cursor: pointer;
+    border: none;
+    box-shadow: 1px 1px 2px grey;
 }
 
 button.darkmodeButton.dark{
@@ -222,6 +226,7 @@ body > header > div.header.Warning.nomsg > div{
     grid-area: warningbtn;
     padding: 10px;
     font-weight: bold;
+    cursor: pointer;
 }
 #warningbtn.showMsg{
     justify-content: left;
@@ -448,6 +453,7 @@ select#locationSelected {
     height: 30px;
     margin-top: 12px;
     margin-bottom: 12px;
+    cursor: pointer;
 }
 
 /* end of mylocation block */

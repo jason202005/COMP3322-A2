@@ -1,9 +1,11 @@
-headerHTML();
-headerData();
-mylocationHTML();
-mySelectionHTML();
-ninedaysHTML();
-ninedaysData();
+window.onload = function() {
+    headerHTML();
+    headerData();
+    mylocationHTML();
+    mySelectionHTML();
+    ninedaysHTML();
+    ninedaysData();
+}
 
 var gettingData ; //global data for header, mylocation and "tempature of different locations" blocks 
 
@@ -18,101 +20,101 @@ function Dark(){
     document.getElementsByClassName("nineDWFBlock")[0].classList.toggle("dark");
     document.getElementById("btn01").classList.toggle("dark");
 }
-function headerData(){
-    fetch('https://data.weather.gov.hk/weatherAPI/opendata/weather.php?dataType=rhrread&lang=en')
+async function headerData(){
+    const response = await fetch('https://data.weather.gov.hk/weatherAPI/opendata/weather.php?dataType=rhrread&lang=en')
     // for testing warning msg
     //fetch('data/weather.Feb17.json')
-        .then( response => {
-            response.json().then( fetchingData => {
+    const fetchingData = await response.json()
             
-            gettingData = fetchingData;
-            let output = "";
-            let TempData = gettingData.temperature.data[1];
-            output = '<span class="temperture"> '+ TempData.value + '°' + TempData.unit + ' </span>'
-            document.getElementsByClassName("header Temperature")[0].innerHTML = output;
-            // Ref: https://stackoverflow.com/questions/34456436/document-getelementsbyclassname-innerhtml-not-working
-            TempData = gettingData.icon[0];
-            let iconurl = `https://www.hko.gov.hk/images/HKOWxIconOutline/pic${TempData}.png`;
-            output = '<img src="'+ iconurl +'"> </span>'
-            document.getElementsByClassName("header WeatherIcon")[0].innerHTML = output;
+    gettingData = fetchingData;
+    let output = "";
+    let TempData = gettingData.temperature.data[1];
+    const tempature = document.createElement("span")
+    tempature.className = "temperture"
+    tempature.textContent = TempData.value + '°' + TempData.unit 
+    document.getElementsByClassName("header Temperature")[0].appendChild(tempature)
+    // Ref: https://stackoverflow.com/questions/34456436/document-getelementsbyclassname-innerhtml-not-working
+    TempData = gettingData.icon[0];
+    let iconurl = `https://www.hko.gov.hk/images/HKOWxIconOutline/pic${TempData}.png`;
+    output = '<img src="'+ iconurl +'" />'
+    document.getElementsByClassName("header WeatherIcon")[0].innerHTML = output;
 
-            TempData = gettingData.humidity.data[0];
-            output = '<img src="images/drop-48.png" class="humidityIcon"></img><span class="humidity"> '+ TempData.value  + '</span>';
-            output += '<span class="percent"> % </span>' ; 
-            document.getElementsByClassName("header Humidity")[0].innerHTML = output;
+    TempData = gettingData.humidity.data[0];
+    output = '<img src="images/drop-48.png" class="humidityIcon"></img><span class="humidity"> '+ TempData.value  + '</span>';
+    output += '<span class="percent"> % </span>' ; 
+    document.getElementsByClassName("header Humidity")[0].innerHTML = output;
 
-            TempData = gettingData.rainfall.data[13];
-            output = '<img src="images/rain-48.png" class="headerrainfallIcon"></img><span class="headerrainfall"> '+ TempData.max  + ' </span>';
-            output += '<span class="header-rainfall-unit"> ' + TempData.unit + '</span>';
-            document.getElementsByClassName("header Rainfall")[0].innerHTML = output;
-            if (rainingChecker(TempData.max) == 1) {
-                document.getElementsByTagName("header")[0].classList.add("raining");
-            } else {
-                document.getElementsByTagName("header")[0].classList.add("withoutRaining");
-            }
+    TempData = gettingData.rainfall.data[13];
+    output = '<img src="images/rain-48.png" class="headerrainfallIcon"><span class="headerrainfall"> '+ TempData.max  + ' </span>';
+    output += '<span class="header-rainfall-unit"> ' + TempData.unit + '</span>';
+    document.getElementsByClassName("header Rainfall")[0].innerHTML = output;
+    if (rainingChecker(TempData.max) == 1) {
+        document.getElementsByTagName("header")[0].classList.add("raining");
+    } else {
+        document.getElementsByTagName("header")[0].classList.add("withoutRaining");
+    }
 
 
-            let mayMissingData;
-            try {
-                mayMissingData = gettingData.uvindex.data[0].value;
-                output = '<img src="images/UVindex-48.png" class="uvindexIcon"></img><span class="uvindex">' + mayMissingData  + '</span>';
-            }
-            catch(err) {
-                output = '<span class="uvindex"></span>';
-            }
-            finally {
-                document.getElementsByClassName("header UVLevel")[0].innerHTML = output;
-            }
-           
-            TempData = gettingData.updateTime.substr(11,5);
-            // var hour = gettingData.updateTime.substr(11,2);
-            var hour = new Date();
-            if (daytimeChecker(hour.getHours()) == 1){
-                document.getElementsByTagName("header")[0].classList.add("day");
-            }else{
-                // adding night and dark for auto dark mode at night
-                document.getElementsByTagName("body")[0].classList.add("dark");
-                document.getElementsByTagName("body")[0].classList.add("night");
-                document.getElementsByTagName("header")[0].classList.add("night");
-                document.getElementsByTagName("header")[0].classList.add("dark");
-                document.getElementsByTagName("section")[0].classList.add("dark");
-                document.getElementsByTagName("section")[0].classList.add("night");
-                document.getElementsByClassName("headerTitle")[0].classList.add("dark");
-                document.getElementsByClassName("headerTitle")[0].classList.add("night");
-                document.getElementsByClassName("nineDWFBlock")[0].classList.add("dark");
-                document.getElementsByClassName("nineDWFBlock")[0].classList.add("night");
-                
-            }
-            let output3 = '<span class="lastupdate"> Last Update: ' + TempData + '</span>';
-            
-            output = '<div onclick="showMsg()" class="warning-title" id="warningbtn"> Warning </div>';
-            console.log(gettingData.warningMessage[0], "Warning msg");
-            // when there is no warning msg, we add nomsg class to class Warning
-            if (gettingData.warningMessage[0] === undefined){
-                document.getElementsByClassName("Warning")[0].classList.toggle("nomsg");
-            }
-            output2 = '';
-            try {
-                mayMissingData = gettingData.warningMessage;
-                output2 += '<div id="warningbtnMsg"><ul>';
-                for (let numofmsg in mayMissingData){
-                    output2 += '<li class="warning-content'+ numofmsg+ '">' + mayMissingData[numofmsg]  + '</li>';
-                }
-                output2 += '</ul></div>';
-            }
-               
-            catch(err) {
-                output = '<span class="warning-title nowarning">Warning </span>';
-                output2 = '<span class="warning-content nowarning"></span>';
-            }
-            finally {
-                output += output2 ;
-                output += output3 ;
-                document.getElementsByClassName("header Warning")[0].innerHTML = output;
-            }
+    let mayMissingData;
+    try {
+        mayMissingData = gettingData.uvindex.data[0].value;
+        output = '<img src="images/UVindex-48.png" class="uvindexIcon" /><span class="uvindex">' + mayMissingData  + '</span>';
+    }
+    catch(err) {
+        output = '<span class="uvindex"></span>';
+    }
+    finally {
+        document.getElementsByClassName("header UVLevel")[0].innerHTML = output;
+    }
+    
+    TempData = gettingData.updateTime.substr(11,5);
+    // var hour = gettingData.updateTime.substr(11,2);
+    var hour = new Date();
+    if (daytimeChecker(hour.getHours()) == 1){
+        document.querySelector("header").classList.add("day");
+    }else{
+        // adding night and dark for auto dark mode at night
+        document.getElementsByTagName("body")[0].classList.add("dark");
+        document.getElementsByTagName("body")[0].classList.add("night");
+        document.getElementsByTagName("header")[0].classList.add("night");
+        document.getElementsByTagName("header")[0].classList.add("dark");
+        document.getElementsByTagName("section")[0].classList.add("dark");
+        document.getElementsByTagName("section")[0].classList.add("night");
+        document.querySelector(".headerTitle").classList.add("dark");
+        document.getElementsByClassName("headerTitle")[0].classList.add("night");
+        document.getElementsByClassName("nineDWFBlock")[0].classList.add("dark");
+        document.getElementsByClassName("nineDWFBlock")[0].classList.add("night");
+        
+    }
+    let output3 = '<span class="lastupdate"> Last Update: ' + TempData + '</span>';
+    
+    output = '<div onclick="showMsg()" class="warning-title" id="warningbtn"> Warning </div>';
+    console.log(gettingData.warningMessage[0], "Warning msg");
+    // when there is no warning msg, we add nomsg class to class Warning
+    if (gettingData.warningMessage[0] === undefined){
+        document.getElementsByClassName("Warning")[0].classList.toggle("nomsg");
+    }
+    output2 = '';
+    try {
+        mayMissingData = gettingData.warningMessage;
+        output2 += '<div id="warningbtnMsg"><ul>';
+        for (let numofmsg in mayMissingData){
+            output2 += '<li class="warning-content'+ numofmsg+ '">' + mayMissingData[numofmsg]  + '</li>';
+        }
+        output2 += '</ul></div>';
+    }
+        
+    catch(err) {
+        output = '<span class="warning-title nowarning">Warning </span>';
+        output2 = '<span class="warning-content nowarning"></span>';
+    }
+    finally {
+        output += output2 ;
+        output += output3 ;
+        document.getElementsByClassName("header Warning")[0].innerHTML = output;
+    }
 
-        });
-    });
+    
 }
 
 function showMsg(){
@@ -127,37 +129,39 @@ function ninedaysHTML(){
     document.body.innerHTML += '<section><div class= "nineDWFBlock"> <div class="title"> 9-Day Forcast </div>   <div class="nine-days">  </div></div> </section>';
 }
 
-function ninedaysData(){
-    fetch('https://data.weather.gov.hk/weatherAPI/opendata/weather.php?dataType=fnd&lang=en')
-    .then( response => {
-        response.json().then( fetchingData => {
-            let output = "";
-            let daynum = 0;
-            let ForecastData = fetchingData.weatherForecast;
+async function ninedaysData(){
+    const response = await fetch('https://data.weather.gov.hk/weatherAPI/opendata/weather.php?dataType=fnd&lang=en')
+    const fetchingData = await response.json()
+    let output = "";
+    let daynum = 0;
+    let ForecastData = fetchingData.weatherForecast;
+    
+    for (let dayno of ForecastData){
+        let month = parseInt(dayno.forecastDate.substr(6,2));
+        let day = parseInt(dayno.forecastDate.substr(4,2));
+        let week = dayno.week.substr(0,3);
+        let maxtemp = dayno.forecastMaxtemp.value;
+        let mintemp = dayno.forecastMintemp.value;
+        let tempunit = '°' + dayno.forecastMintemp.unit;
+        let maxhumidity = dayno.forecastMaxrh.value;
+        let minhumidity = dayno.forecastMinrh.value;
+        let iconurl = `https://www.hko.gov.hk/images/HKOWxIconOutline/pic${dayno.ForecastIcon}.png`;
+        output = `
+            <div class="day ${daynum}">
+            </div>
+        `
+        output = '<div class="day ' +daynum+ '">';
+        output += '<span class="week'+daynum+'">' + week + '  ' + day + '/' + month +  '</span>';
+        // output += '<span class="date'+daynum+'">' + day + '/' + month + '</span>';
+        output += '<div class="icon '+daynum+'"><img src="'+iconurl+'"></img></div>';
+        output += '<div class="temp MaxToMin">'+ mintemp + '-' + maxtemp + tempunit + '</div>';
+        output += '<div class="hum MaxToMin">'+ minhumidity + '-' + maxhumidity + '%' + '</div>';
+        output += '</div>';
+        daynum += 1;
+        document.getElementsByClassName("nine-days")[0].innerHTML += output;
+    }
            
-            for (let dayno of ForecastData){
-                let month = parseInt(dayno.forecastDate.substr(6,2));
-                let day = parseInt(dayno.forecastDate.substr(4,2));
-                let week = dayno.week.substr(0,3);
-                let maxtemp = dayno.forecastMaxtemp.value;
-                let mintemp = dayno.forecastMintemp.value;
-                let tempunit = '°' + dayno.forecastMintemp.unit;
-                let maxhumidity = dayno.forecastMaxrh.value;
-                let minhumidity = dayno.forecastMinrh.value;
-                let iconurl = `https://www.hko.gov.hk/images/HKOWxIconOutline/pic${dayno.ForecastIcon}.png`;
-                output = '<div class="day ' +daynum+ '">';
-                output += '<span class="week'+daynum+'">' + week + '  ' + day + '/' + month +  '</span>';
-                // output += '<span class="date'+daynum+'">' + day + '/' + month + '</span>';
-                output += '<div class="icon '+daynum+'"><img src="'+iconurl+'"></img></div>';
-                output += '<div class="temp MaxToMin">'+ mintemp + '-' + maxtemp + tempunit + '</div>';
-                output += '<div class="hum MaxToMin">'+ minhumidity + '-' + maxhumidity + '%' + '</div>';
-                output += '</div>';
-                daynum += 1;
-                document.getElementsByClassName("nine-days")[0].innerHTML += output;
-            }
-           
-        });
-    });
+    
 }
 
 // end of nine-days block 
@@ -181,151 +185,124 @@ function mySelectFunction(){
     
 }
 
-function mylocationData(){
-    fetch('https://nominatim.openstreetmap.org/reverse?format=json&lat=' +latitude + '&lon='+ longitude + '&zoom=18&addressdetails=1&accept-language=en')
-    .then( response => {
-        response.json().then( fetchingData => {
-            let output = "";
-            let dAnds = dAndsChecker(fetchingData) ;
-            console.log(dAnds)
-            let district = dAnds.d;
-            let suburb =  dAnds.s;
-            let locIndex = locationChecker(district, "rainfall");
-            let rainData =  gettingData.rainfall.data[locIndex];
-            var minD = 9999999.99999;
-            airLocChecker(minD, district, suburb, rainData, output);
-           
-
+async function mylocationData(){
+    const response = await fetch('https://nominatim.openstreetmap.org/reverse?format=json&lat=' +latitude + '&lon='+ longitude + '&zoom=18&addressdetails=1&accept-language=en')
+    const fetchingData = await response.json()
+       
+    let output = "";
+    let dAnds = dAndsChecker(fetchingData) ;
+    console.log(dAnds)
+    let district = dAnds.d;
+    let suburb =  dAnds.s;
+    let locIndex = locationChecker(district, "rainfall");
+    let rainData =  gettingData.rainfall.data[locIndex];
+    var minD = 9999999.99999;
+    airLocChecker(minD, district, suburb, rainData, output);
         
-        });
-    });
 }
-
 
 async function airLocChecker(minD, district, suburb, rainData, output){
     // symlat2 and symlong2 are storing our current angular location info.
     let symlat2 = latitude * Math.PI/180;
     let symlong2 = longitude * Math.PI/180;
     let saveindex = 0;
-    await fetch('https://ogciopsi.blob.core.windows.net/dataset/weather-station/weather-station-info.json')
-    .then( response => {
-        response.json().then ( fetchingData => {
-            for (let index in fetchingData){
-                // lat1 and long1 are the location of weather stations
-                // symlat1 and symlong are the angular location info of weather stations
-               let lat1 = fetchingData[index].latitude;
-               let long1 = fetchingData[index].longitude;
-               let symlat1 = lat1 * Math.PI/180;
-               let symlong1 = long1 * Math.PI/180;
-               
-               const x = (symlong1 - symlong2) * Math.cos((symlat1+symlat2)/2);
-               const y = (symlat1 - symlat2);
-               const d = Math.sqrt(x*x + y*y) * 6371;
-            //    console.log(d, "distance");
-            // minD is the distance of the closest weather station
-               if (d < minD) {
-                   minD = d;
-                //    console.log(minD, "mindistance adjusted");
-                   saveindex = index;
-               }
-            }
-            let nameOfStation =  fetchingData[saveindex].station_name_en;
-            let stationLat = fetchingData[saveindex].latitude;
-            let stationLong = fetchingData[saveindex].longitude;
-
-            console.log(nameOfStation, "nameOfStation");
-            console.log(stationLat, "stationLat");
-            console.log(stationLong, "stationLong");
-
-            var tempMylocation, unitMylocation;
-            let tempdata = gettingData.temperature.data;
-            for (let ind in tempdata){
-                // console.log(tempdata[ind].place, "tempdata[ind].place");
-                
-                if (tempdata[ind].place.includes(nameOfStation)){
-                    tempMylocation = tempdata[ind].value ;
-                    unitMylocation = tempdata[ind].unit;
-                    // console.log(tempMylocation, unitMylocation, "success");
-                }
-            }
-
-            
-            fetch("data/aqhi-station-info.json")
-            .then( response => {
-                response.json().then ( fetchingAirLocationData => {
-                    
-                    
-                    for (let index in fetchingAirLocationData){
-                        // console.log(fetchingAirLocationData[index].station, "fetchingAirLocationData[stat].station");
-                        
-                        let lat1 = fetchingAirLocationData[index].lat;
-                        let long1 = fetchingAirLocationData[index].long;
-                        let symlat1 = lat1 * Math.PI/180;
-                        let symlong1 = long1 * Math.PI/180;
-                        
-                        const x = (symlong1 - symlong2) * Math.cos((symlat1+symlat2)/2);
-                        const y = (symlat1 - symlat2);
-                        const d = Math.sqrt(x*x + y*y) * 6371;
-                        //    console.log(d, "distance");
-                        // minD is the distance of the closest air quality station
-                        if (d < minD) {
-                            minD = d;
-                            //    console.log(minD, "mindistance adjusted");
-                            saveindex = index;
-                        }
-                    }
-                    let nameOfAirStation =  fetchingAirLocationData[saveindex].station;
-                    console.log(nameOfAirStation, "nameOfAirStation");
-
-                    // getting the air quality data with the closest location info
-                    var aqhi, risklevel;
-                    fetch('https://dashboard.data.gov.hk/api/aqhi-individual?format=json')
-                    .then( response => {
-                        response.json().then ( fetchingAirData => {
-                            for (let stat in fetchingAirData){
-                                if (fetchingAirData[stat].station.includes(nameOfAirStation) )
-                                {
-                                    aqhi = fetchingAirData[stat].aqhi ;
-                                    risklevel = fetchingAirData[stat].health_risk;
-                                    // console.log(aqhi, "aqhi");
-                                    // console.log(risklevel, "risklevel");
-                                    
-                                }
-                            }
-                           
-                            document.getElementsByClassName("rainfallIcon")[0].classList.add("ready");
-                            document.getElementsByClassName("district")[0].innerHTML = district;
-                            document.getElementsByClassName("suburb")[0].innerHTML = suburb;
-                           
-                            output = '<span class="mylocation-degree">' + tempMylocation + '</span>' + '<span class="mylocation-unit">' + '°' + unitMylocation + '</span>';
-                            document.getElementsByClassName("top-right-temp")[0].innerHTML = output;
-                            
-                            output = '<span class="mylocation-rainMax">' +rainData.max + '</span>' +'<span class="mylocation-Runit">' + rainData.unit+ '</span>';
-                            document.getElementsByClassName("rainfall")[0].innerHTML = output;
-                            
-                            document.getElementsByClassName("aqhi")[0].innerHTML = aqhi;
-                            let imageSrc = `images/aqhi-${risklevel}.png`;
-                            document.getElementsByClassName("aqhiIcon")[0].innerHTML = '<img src="'+imageSrc+'"></img>';
-                            
-                            document.getElementsByClassName("risklevel")[0].innerHTML = risklevel;
-                
-                           
-                        });
-                    });
-
-                    
-                    
-                });
-            });
-            
-            
-            
-         
-            
-        });
+    const response = await fetch('https://ogciopsi.blob.core.windows.net/dataset/weather-station/weather-station-info.json')
+    const fetchingData = await response.json()
+    for (let index in fetchingData){
+        // lat1 and long1 are the location of weather stations
+        // symlat1 and symlong are the angular location info of weather stations
+        let lat1 = fetchingData[index].latitude;
+        let long1 = fetchingData[index].longitude;
+        let symlat1 = lat1 * Math.PI/180;
+        let symlong1 = long1 * Math.PI/180;
         
-    });
+        const x = (symlong1 - symlong2) * Math.cos((symlat1+symlat2)/2);
+        const y = (symlat1 - symlat2);
+        const d = Math.sqrt(x*x + y*y) * 6371;
+    //    console.log(d, "distance");
+    // minD is the distance of the closest weather station
+        if (d < minD) {
+            minD = d;
+        //    console.log(minD, "mindistance adjusted");
+            saveindex = index;
+        }
+    }
+    let nameOfStation =  fetchingData[saveindex].station_name_en;
+    let stationLat = fetchingData[saveindex].latitude;
+    let stationLong = fetchingData[saveindex].longitude;
+
+    console.log(nameOfStation, "nameOfStation");
+    console.log(stationLat, "stationLat");
+    console.log(stationLong, "stationLong");
+
+    var tempMylocation, unitMylocation;
+    let tempdata = gettingData.temperature.data;
+    for (let ind in tempdata){
+        // console.log(tempdata[ind].place, "tempdata[ind].place");
+        
+        if (tempdata[ind].place.includes(nameOfStation)){
+            tempMylocation = tempdata[ind].value ;
+            unitMylocation = tempdata[ind].unit;
+            // console.log(tempMylocation, unitMylocation, "success");
+        }
+    }
+
+    const stationInfoResp = await fetch("data/aqhi-station-info.json")
+    const fetchingAirLocationData = await stationInfoResp.json()
+
+            
+    for (let index in fetchingAirLocationData){
+        // console.log(fetchingAirLocationData[index].station, "fetchingAirLocationData[stat].station");
+        
+        let lat1 = fetchingAirLocationData[index].lat;
+        let long1 = fetchingAirLocationData[index].long;
+        let symlat1 = lat1 * Math.PI/180;
+        let symlong1 = long1 * Math.PI/180;
+        
+        const x = (symlong1 - symlong2) * Math.cos((symlat1+symlat2)/2);
+        const y = (symlat1 - symlat2);
+        const d = Math.sqrt(x*x + y*y) * 6371;
+        //    console.log(d, "distance");
+        // minD is the distance of the closest air quality station
+        if (d < minD) {
+            minD = d;
+            //    console.log(minD, "mindistance adjusted");
+            saveindex = index;
+        }
+    }
+    let nameOfAirStation =  fetchingAirLocationData[saveindex].station;
+    console.log(nameOfAirStation, "nameOfAirStation");
+
+    // getting the air quality data with the closest location info
+    var aqhi, risklevel;
+    const airResp = await fetch('https://dashboard.data.gov.hk/api/aqhi-individual?format=json')
+    const fetchingAirData = await airResp.json()
+    for (let stat in fetchingAirData){
+        if (fetchingAirData[stat].station.includes(nameOfAirStation) )
+        {
+            aqhi = fetchingAirData[stat].aqhi ;
+            risklevel = fetchingAirData[stat].health_risk;
+            // console.log(aqhi, "aqhi");
+            // console.log(risklevel, "risklevel");
+            
+        }
+    }
     
+    document.getElementsByClassName("rainfallIcon")[0].classList.add("ready");
+    document.getElementsByClassName("district")[0].innerHTML = district;
+    document.getElementsByClassName("suburb")[0].innerHTML = suburb;
+    
+    output = '<span class="mylocation-degree">' + tempMylocation + '</span>' + '<span class="mylocation-unit">' + '°' + unitMylocation + '</span>';
+    document.getElementsByClassName("top-right-temp")[0].innerHTML = output;
+    
+    output = '<span class="mylocation-rainMax">' +rainData.max + '</span>' +'<span class="mylocation-Runit">' + rainData.unit+ '</span>';
+    document.getElementsByClassName("rainfall")[0].innerHTML = output;
+    
+    document.getElementsByClassName("aqhi")[0].innerHTML = aqhi;
+    let imageSrc = `images/aqhi-${risklevel}.png`;
+    document.getElementsByClassName("aqhiIcon")[0].innerHTML = '<img src="'+imageSrc+'"></img>';
+    
+    document.getElementsByClassName("risklevel")[0].innerHTML = risklevel;
 }
 
 function locationChecker(district, type){
