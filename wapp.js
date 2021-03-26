@@ -1,3 +1,7 @@
+// A2 link： https://github.com/jason202005/WebMaster
+
+//loading html first, so we can still see the layout even we cannot recieve the data.
+
 window.onload = function() {
     headerHTML();
     headerData();
@@ -8,6 +12,7 @@ window.onload = function() {
 }
 
 var gettingData ; //global data for header, mylocation and "tempature of different locations" blocks 
+
 
 function headerHTML() {
     document.body.innerHTML = '<div class="headerTitle"> <h1>My Weather Portal</h1> <button class="darkmodeButton" id="btn01" onclick="Dark()"> <span class="notPressed"> Dark Mode </span> <span class="Pressed"> Day Mode </span> </button></div> <header> <div class="header location">Hong Kong</div> <div class="header block">  <div class="header WeatherIcon"></div> <div class="header Temperature"></div> <div class="header Humidity"></div> <div class="header Rainfall"></div> <div class="header UVLevel"></div> </div><div class="header Warning"></div>  </<header> ';
@@ -23,10 +28,26 @@ function Dark(){
 async function headerData(){
     const response = await fetch('https://data.weather.gov.hk/weatherAPI/opendata/weather.php?dataType=rhrread&lang=en')
     // for testing warning msg
-    //fetch('data/weather.Feb17.json')
+    //const response = await fetch('data/weather.Feb17.json')
     const fetchingData = await response.json()
             
     gettingData = fetchingData;
+
+    // since the html of myselectionHTML function is loaded before getting the data from data.weather.gov.hk, we create options tag here.
+    let tmptem = gettingData.temperature.data;
+    let locationListd = []
+    for (let i in tmptem){
+        locationListd[i] = tmptem[i].place;
+    }
+    let opt = "<option></option>"
+    for (let ind in locationListd){
+       
+        opt += "<option value=" + ind + ">" + locationListd[ind] + "</option>" ;
+       
+    }
+    document.getElementById("locationSelected").innerHTML = opt;
+    sorting() ;
+
     let output = "";
     let TempData = gettingData.temperature.data[1];
     const tempature = document.createElement("span")
@@ -164,6 +185,25 @@ async function ninedaysData(){
     
 }
 
+
+//REF: https://stackoverflow.com/questions/278089/javascript-to-sort-contents-of-select-element/955802
+function sorting() {
+    let i;
+    optionsID = document.getElementById("locationSelected");
+    let emptyarr = [];
+    for (i=0 ; i<optionsID.length ; i++) {
+        emptyarr[i] = [];
+        emptyarr[i][0] = optionsID.options[i].text;
+        emptyarr[i][1] = optionsID.options[i].value;
+    }
+    emptyarr.sort();
+
+    for (i=0;i<optionsID.length;i++) {
+        optionsID.options[i] = new Option(emptyarr[i][0], emptyarr[i][1]);
+    }
+    
+}
+
 // end of nine-days block 
 function mylocationHTML(){
 
@@ -174,8 +214,10 @@ function mylocationHTML(){
     }
 }
 
-function mySelectionHTML(){
-    document.getElementsByClassName("selectLocation")[0].innerHTML = '<div class="title"> Temperatures </div> <div class="sub-title"> Select the location </div> <select id="locationSelected" onchange="mySelectFunction()"> <option value="-1"> Select a location </option> <option value="0"> King&#39;s Park </option> <option value="1"> Hong Kong Observatory </option> <option value="2"> Wong Chuk Hang </option> <option value="3"> Ta Kwu Ling </option> <option value="4"> Lau Fau Shan </option> <option value="5"> Sha Tin </option> <option value="6"> Tuen Mun </option> <option value="7"> Tseung Kwan O </option> <option value="8"> Sai Kung </option> <option value="9"> Cheung Chau </option> <option value="10"> Chek Lap Kok </option> <option value="11"> Tsing Yi </option> <option value="12"> Shek Kong </option> <option value="13"> Tsuen Wan Ho Koon </option> <option value="14"> Tsuen Wan Shing Mun Valley </option> <option value="15"> Hong Kong Park </option> <option value="16"> Shau Kei Wan </option> <option value="17"> Kowloon City </option> <option value="18"> Happy Valley </option> <option value="19"> Wong Tai Sin </option> <option value="20"> Stanley </option> <option value="21"> Kwun Tong </option> <option value="22"> Sham Shui Po </option> <option value="23"> Kai Tak Runway Park </option> <option value="24"> Yuen Long Park </option> <option value="25">Tai Mei Tuk</option> </option> </option> </select> <div id="selectedTemperture"></div>';
+async function mySelectionHTML(){   
+    let str = '<div class="title"> Temperatures </div> <div class="sub-title"> Select the location </div> <select id="locationSelected" onchange="mySelectFunction()"></select> <div id="selectedTemperture"></div>';
+    document.getElementsByClassName("selectLocation")[0].innerHTML = str;
+   
 }
 
 function mySelectFunction(){
@@ -194,7 +236,8 @@ async function mylocationData(){
     console.log(dAnds)
     let district = dAnds.d;
     let suburb =  dAnds.s;
-    let locIndex = locationChecker(district, "rainfall");
+    let rainDataList =  gettingData.rainfall.data
+    let locIndex = locationChecker(district, "rainfall", rainDataList);
     let rainData =  gettingData.rainfall.data[locIndex];
     var minD = 9999999.99999;
     airLocChecker(minD, district, suburb, rainData, output);
@@ -219,11 +262,9 @@ async function airLocChecker(minD, district, suburb, rainData, output){
         const x = (symlong1 - symlong2) * Math.cos((symlat1+symlat2)/2);
         const y = (symlat1 - symlat2);
         const d = Math.sqrt(x*x + y*y) * 6371;
-    //    console.log(d, "distance");
-    // minD is the distance of the closest weather station
+        // minD is the distance of the closest weather station
         if (d < minD) {
             minD = d;
-        //    console.log(minD, "mindistance adjusted");
             saveindex = index;
         }
     }
@@ -237,13 +278,10 @@ async function airLocChecker(minD, district, suburb, rainData, output){
 
     var tempMylocation, unitMylocation;
     let tempdata = gettingData.temperature.data;
-    for (let ind in tempdata){
-        // console.log(tempdata[ind].place, "tempdata[ind].place");
-        
+    for (let ind in tempdata){        
         if (tempdata[ind].place.includes(nameOfStation)){
             tempMylocation = tempdata[ind].value ;
             unitMylocation = tempdata[ind].unit;
-            // console.log(tempMylocation, unitMylocation, "success");
         }
     }
 
@@ -252,8 +290,6 @@ async function airLocChecker(minD, district, suburb, rainData, output){
 
             
     for (let index in fetchingAirLocationData){
-        // console.log(fetchingAirLocationData[index].station, "fetchingAirLocationData[stat].station");
-        
         let lat1 = fetchingAirLocationData[index].lat;
         let long1 = fetchingAirLocationData[index].long;
         let symlat1 = lat1 * Math.PI/180;
@@ -262,7 +298,6 @@ async function airLocChecker(minD, district, suburb, rainData, output){
         const x = (symlong1 - symlong2) * Math.cos((symlat1+symlat2)/2);
         const y = (symlat1 - symlat2);
         const d = Math.sqrt(x*x + y*y) * 6371;
-        //    console.log(d, "distance");
         // minD is the distance of the closest air quality station
         if (d < minD) {
             minD = d;
@@ -281,10 +316,7 @@ async function airLocChecker(minD, district, suburb, rainData, output){
         if (fetchingAirData[stat].station.includes(nameOfAirStation) )
         {
             aqhi = fetchingAirData[stat].aqhi ;
-            risklevel = fetchingAirData[stat].health_risk;
-            // console.log(aqhi, "aqhi");
-            // console.log(risklevel, "risklevel");
-            
+            risklevel = fetchingAirData[stat].health_risk.toLowerCase();
         }
     }
     
@@ -305,7 +337,7 @@ async function airLocChecker(minD, district, suburb, rainData, output){
     document.getElementsByClassName("risklevel")[0].innerHTML = risklevel;
 }
 
-function locationChecker(district, type){
+function locationChecker(district, type,rainDataList){
     
     let index = 0;
     if (district.includes("District")){
@@ -314,53 +346,19 @@ function locationChecker(district, type){
     }
     console.log(district, index);
 
-    for (let loc in locationList){
+    for (let loc in rainDataList){
         // console.log(locationList[loc], loc);
         if (type === "rainfall"){
-            if (gettingData.rainfall.data[loc].place.includes(district) )
+            if (rainDataList[loc].place.includes(district) )
             {
                 console.log(gettingData.rainfall.data[loc], loc ,"success");
                 return loc;
             }
         }
-        //basic 25 districts, 
-        // if (locationList[loc].includes(district)){
-        //     console.log(locationList[loc], loc);
-        //     return loc;
-        // }
     }
     // otherwise return HKO data
     return 1;
 }
-
-const locationList =[
-    "King's Park", 
-    "Hong Kong Observatory" ,
-    "Wong Chuk Hang" ,
-    "Ta Kwu Ling" ,
-    "Lau Fau Shan" ,
-    "Sha Tin" ,
-    "Tuen Mun" ,
-    "Tseung Kwan O" ,
-    "Sai Kung" ,
-    "Cheung Chau" ,
-    "Chek Lap Kok" ,
-    "Tsing Yi" ,
-    "Shek Kong" ,
-    "Tsuen Wan Ho Koon" ,
-    "Tsuen Wan Shing Mun Valley" ,
-    "Hong Kong Park" , 
-    "Shau Kei Wan" , 
-    "Kowloon City" , 
-    "Happy Valley" , 
-    "Wong Tai Sin" , 
-    "Stanley" , 
-    "Kwun Tong" , 
-    "Sham Shui Po" , 
-    "Kai Tak Runway Park" , 
-    "Yuen Long Park" , 
-    "Tai Mei Tuk" 
-]
 
 function currentpos(pos) {
     latitude = parseFloat(pos.coords.latitude);
